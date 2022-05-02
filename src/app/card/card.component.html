@@ -5,8 +5,9 @@
 
     img {
         width: 70px;
+        box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
     }
 </style>
 <div class="card">
-    <img [ngClass]="cardId" src='assets/cards/{{cardId}}.png' alt="playing_card">
+    <img class="{{cardId}}" src='assets/cards/{{cardId}}.png' alt="playing_card">
 </div>

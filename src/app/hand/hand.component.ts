@@ -1,18 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Card, Suit, Value } from '../component_classes/card';
-import {CdkDragMove, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragMove, CdkDragStart, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+
 
 @Component({
   selector: 'app-hand',
   templateUrl: './hand.component.html',
   styleUrls: ['./hand.component.sass']
 })
-export class HandComponent implements OnInit {
+export class HandComponent implements OnInit, AfterViewInit {
+  @ViewChild('play_holder', {static: true}) playHolderElement : ElementRef;
+
   cards : Card[]  = [Card.createCard(Suit.CLUBS, Value.FIVE), Card.createCard(Suit.CLUBS, Value.QUEEN),Card.createCard(Suit.HEARTS, Value.FIVE), Card.createCard(Suit.SPADES, Value.SIX)];
   play : Card[] = [Card.createCard(Suit.CLUBS, Value.FIVE)]
   playAreaHovered : Boolean = false;
+  selectedcard : String | null;
+  play_holderbottomLine : Number;
 
   constructor() { }
+  ngAfterViewInit(): void {
+    const coords = this.playHolderElement.nativeElement.getBoundingClientRect();
+    this.play_holderbottomLine = coords.y + coords.height;
+  }
 
   ngOnInit(): void {
     // this.cards = this.generateFullDeck();
@@ -20,11 +29,15 @@ export class HandComponent implements OnInit {
   }
 
   move(event: CdkDragMove) {
-    console.log(event)
+    // console.log(event)
+    if (event.pointerPosition.y <= this.play_holderbottomLine && this.selectedcard) {
+      this.popCard(this.selectedcard);
+    }
   }
 
-  overed(e: any) {
-    console.log("on")
+  dragged(e:CdkDragStart) {
+    console.log(e.source.element.nativeElement.children[0].children[0].className)
+    this.selectedcard = e.source.element.nativeElement.children[0].children[0].className
   }
 
   private pushrandomcards() : void {
@@ -34,6 +47,19 @@ export class HandComponent implements OnInit {
     }
     setTimeout(this.pushrandomcards.bind(this), 3000)
 
+  }
+  private popCard (id : String) {
+    let index: number | null = null;
+    this.cards.forEach((card, i) => {
+      if (card.getId() == id) {
+        index = i
+      }
+    })
+    if (index != null) {
+      let expelledCard = this.cards[index]
+      this.play = [...this.play, expelledCard]
+      this.cards = this.cards.filter(card => card != expelledCard)
+    }
   }
 
   private generateFullDeck() : Card[] {
@@ -59,6 +85,4 @@ export class HandComponent implements OnInit {
     
     return result;
   }
-
-
 }

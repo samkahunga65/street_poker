@@ -13,8 +13,9 @@
         min-height: 80px;
         background-color: #a1dbb4;
         display: flex;
-        flex-wrap: wrap;
+        justify-content: center;
         padding: auto;
+        overflow-y: scroll;
     }
 
     app-card {
@@ -22,6 +23,13 @@
         transition: 0.1s;
         padding-top: 2px;
         padding-bottom: 2px;
+        
+    }
+    .play_holder app-card:not(:first-child) {
+        margin-left: -1.5rem;
+    }
+    .play_holder app-card:hover {
+        transform: translateY(-1em);
     }
     .cdk-drag {
         height: 100px;
@@ -29,12 +37,13 @@
 
 </style>
 <div>
-    {{playAreaHovered}}
-    <div (mouseover)="playAreaHovered=true" (mouseout)="playAreaHovered=false" class="play_holder">
-        <app-card (cdkDragMoved)="move($event)" class="card" *ngFor="let card of play" [card]=card cdkDrag></app-card>
+    <div class="gridparent">
+        <div #play_holder (mouseover)="playAreaHovered=true" (mouseout)="playAreaHovered=false" class="play_holder">
+            <app-card class="card" *ngFor="let card of play" [card]=card></app-card>
+        </div>
     </div>
     <div class="card_holder">
-        <app-card (cdkDragMoved)="move($event)" class="card" *ngFor="let card of cards" [card]=card cdkDrag></app-card>
+        <app-card (cdkDragReleased)="selectedcard=null" (cdkDragStarted)="dragged($event)" (cdkDragMoved)="move($event)" class="card" *ngFor="let card of cards" [card]=card cdkDrag></app-card>
     </div>
 </div>
 
