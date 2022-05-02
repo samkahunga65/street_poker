@@ -1,0 +1,40 @@
+<style>
+    .card_holder {
+        width: 100%;
+        min-height: 200px;
+        background-color: #8FD5A6;
+        display: flex;
+        flex-wrap: wrap;
+        padding: auto;
+    }
+
+    .play_holder {
+        width: 100%;
+        min-height: 80px;
+        background-color: #a1dbb4;
+        display: flex;
+        flex-wrap: wrap;
+        padding: auto;
+    }
+
+    app-card {
+        height: auto;
+        transition: 0.1s;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+    .cdk-drag {
+        height: 100px;
+    }
+
+</style>
+<div>
+    {{playAreaHovered}}
+    <div (mouseover)="playAreaHovered=true" (mouseout)="playAreaHovered=false" class="play_holder">
+        <app-card (cdkDragMoved)="move($event)" class="card" *ngFor="let card of play" [card]=card cdkDrag></app-card>
+    </div>
+    <div class="card_holder">
+        <app-card (cdkDragMoved)="move($event)" class="card" *ngFor="let card of cards" [card]=card cdkDrag></app-card>
+    </div>
+</div>
+
